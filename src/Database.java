@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Properties;
 
 public class Database {
@@ -11,6 +8,7 @@ public class Database {
     private static Connection connection = null;
     private static Statement stmt = null;
     private static Properties props = new Properties();
+    private static String[] nodes = new String[100];
 
     private Database() {
     }
@@ -34,6 +32,7 @@ public class Database {
         String message="Status:Connection established";
         System.out.println(message);
         OutputMessageForm.setOutputTxt(message);
+
     }
 
     public static void closeConnection() throws SQLException {
@@ -60,4 +59,54 @@ public class Database {
     public static void rollback() throws SQLException {
         connection.rollback();
     }
+
+    public static String extractANode(int j) throws SQLException{
+        getConnection();
+        String sql="SELECT NAME FROM NODES";
+        PreparedStatement preStatement = connection.prepareStatement(sql);
+        ResultSet result = preStatement.executeQuery();
+        int i=0;
+        while (result.next()){
+            nodes[i]=result.getString(1);
+            //System.out.println(nodes[i]);
+            i++;
+
+            // System.out.println(result.getString(1));
+        }
+        return nodes[j];
+    }
+
+    public static void extractAllNodes() throws SQLException{
+        getConnection();
+        String sql="SELECT NAME FROM NODES";
+        PreparedStatement preStatement = connection.prepareStatement(sql);
+        ResultSet result = preStatement.executeQuery();
+        int i=0;
+        while (result.next()){
+            nodes[i]=result.getString(1);
+            //System.out.println(nodes[i]);
+            i++;
+           // System.out.println(result.getString(1));
+        }
+
+    }
+
+    public static void showItinerary() throws SQLException {
+        getConnection();
+        String sql="select r.id as \"Route id\", n1.name as \"Current station\", n2.name as \"Destination\" from ROUTES r\n" +
+                "join NODES n1 on r.start_point=n1.id\n" +
+                "join nodes n2 on r.end_point=n2.id";
+        PreparedStatement preStatement = connection.prepareStatement(sql);
+        ResultSet result = preStatement.executeQuery();
+        String[] message = new String[10];
+        int i=0;
+        while (result.next()){
+            message[i]=result.getInt(1)+" "+ result.getString(2) + " " +result.getString(3);
+            OutputMessageForm.setOutputTxt(message[i]);
+            System.out.println(message[i]);
+            i++;
+        }
+
+    }
+
 }
