@@ -109,4 +109,38 @@ public class Database {
 
     }
 
+    public static void searchSimpleRoute (String start, String end) throws SQLException{
+        getConnection();
+        try (Statement stmt = connection.createStatement();
+             ResultSet result = stmt.executeQuery("select r.id, n1.name, n2.name from ROUTES r\n" +
+                     "join NODES n1 on r.start_point=n1.id\n" +
+                     "join nodes n2 on r.end_point=n2.id\n" +
+                     "where n1.name=\'" + start + "\' and n2.name=\'"+ end +"\'")) {
+            while(result.next()) {
+                    String message = "<html>\n" +
+                            "<h2>Route &nbsp; Start &nbsp; End &nbsp;   </h2>\n" +
+                            "<h2>" + result.getInt(1) + " &nbsp;" + result.getString(2) + "  &nbsp;" + result.getString(3) + " &nbsp; </h2>\n" +
+                            "</html>";
+                    //String message = result.getInt(1) + " " + result.getString(2) + " " + result.getString(3);
+                    OutputMessageForm.setOutputTxt(message);
+
+                   // OutputMessageForm.setOutputTxt("Route not found");
+            }
+           // return result.next() ? rs.getString(1) : null;
+        }
+    }
+
+    public static void showRoute(int routeID) throws SQLException {
+        getConnection();
+        String sql = "select r.id as \"Route id\", n1.name as \"Current station\", n2.name as \"Destination\" from ROUTES r\n" +
+                "join NODES n1 on r.start_point=n1.id\n" +
+                "join nodes n2 on r.end_point=n2.id\n" +
+                "where r.id=" + routeID;
+        PreparedStatement preStatement = connection.prepareStatement(sql);
+        ResultSet result = preStatement.executeQuery();
+        while (result.next()) {
+            String message = result.getInt(1) + " " + result.getString(2) + " " + result.getString(3);
+            OutputMessageForm.setOutputTxt(message);
+        }
+    }
 }

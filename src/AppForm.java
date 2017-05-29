@@ -22,6 +22,10 @@ public class AppForm extends JPanel{
         JComboBox startComboBox = new JComboBox();
         JComboBox endComboBox = new JComboBox();
 
+        startComboBox.getActionListeners();
+        endComboBox.getActionListeners();
+
+
         for (int i=0; i<21; i++){
             startComboBox.addItem(Database.extractANode(i));
             endComboBox.addItem(Database.extractANode(i));
@@ -29,12 +33,20 @@ public class AppForm extends JPanel{
         }
 
 
+
+
         JButton searchBtn = new JButton("Search");
 
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                try {
+                    String startComboBoxText= String.valueOf(startComboBox.getSelectedItem());
+                    String endComboboxText=String.valueOf(endComboBox.getSelectedItem());
+                    Database.searchSimpleRoute(startComboBoxText,endComboboxText);
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
 
