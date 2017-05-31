@@ -20,6 +20,16 @@ public class Database {
     private Database() {
     }
 
+    public static void createConnection() throws SQLException {
+        props.setProperty("user", USER);
+        props.setProperty("password", PASSWORD);
+        connection = DriverManager.getConnection(URL, props);
+        String message = "Connection established";
+        System.out.println(message);
+        OutputStatusForm.setStatusText(message);
+
+    }
+
     public static Connection getConnection() {
         if (connection == null) {
             try {
@@ -31,39 +41,11 @@ public class Database {
         return connection;
     }
 
-
-    public static void createConnection() throws SQLException {
-        props.setProperty("user", USER);
-        props.setProperty("password", PASSWORD);
-        connection = DriverManager.getConnection(URL, props);
-        String message = "Connection established";
-        System.out.println(message);
-        OutputStatusForm.setStatusText(message);
-
-    }
-
     public static void closeConnection() throws SQLException {
         connection.close();
         System.out.println("Status:connection closed");
     }
 
-
-    public static void commit() throws SQLException {
-        try {
-            //connection.setAutoCommit(false);
-
-            //If there is NO errors
-            System.out.println("Status:commiting data here...");
-            connection.commit();
-        } catch (SQLException e) {
-            //If there is any error
-            rollback();
-        }
-    }
-
-    public static void rollback() throws SQLException {
-        connection.rollback();
-    }
 
     public static String extractANode(int j) throws SQLException {
         getConnection();
@@ -192,16 +174,6 @@ public class Database {
     }
 
 
-    public static Integer convertNameToID(String name) throws SQLException {
-        getConnection();
-        Integer ID = null;
-        String sql = "SELECT ID FROM NODES WHERE NAME='" + name + "'";
-        PreparedStatement preStatement = connection.prepareStatement(sql);
-        ResultSet result = preStatement.executeQuery();
-        while (result.next())
-            ID = result.getInt(1);
-        return ID;
-    }
 
 
     public static void showRoute(Integer routeID) throws SQLException {
@@ -421,6 +393,33 @@ public class Database {
         return stringResult;
     }
 
+    public static void commit() throws SQLException {
+        try {
+            //connection.setAutoCommit(false);
+
+            //If there is NO errors
+            System.out.println("Status:commiting data here...");
+            connection.commit();
+        } catch (SQLException e) {
+            //If there is any error
+            rollback();
+        }
+    }
+
+    public static void rollback() throws SQLException {
+        connection.rollback();
+    }
+
+    public static Integer convertNameToID(String name) throws SQLException {
+        getConnection();
+        Integer ID = null;
+        String sql = "SELECT ID FROM NODES WHERE NAME='" + name + "'";
+        PreparedStatement preStatement = connection.prepareStatement(sql);
+        ResultSet result = preStatement.executeQuery();
+        while (result.next())
+            ID = result.getInt(1);
+        return ID;
+    }
 
     public static Integer getRouteID1() {
         return routeID1;
