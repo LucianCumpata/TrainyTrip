@@ -52,7 +52,7 @@ public class AppForm extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    Database.runSearch(String.valueOf(startComboBox.getSelectedItem()),String.valueOf(endComboBox.getSelectedItem()));
+                    Database.searchSimpleRoute(String.valueOf(startComboBox.getSelectedItem()),String.valueOf(endComboBox.getSelectedItem()));
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }
@@ -60,6 +60,7 @@ public class AppForm extends JPanel{
         });
 
 
+        /*
         JButton doubleSearchBtn = new JButton("Search double");
 
         doubleSearchBtn.addActionListener(new ActionListener() {
@@ -82,7 +83,7 @@ public class AppForm extends JPanel{
         simpleSearchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
+              )  try {
                     Database.showRoute(Database.searchSimpleRoute(String.valueOf(startComboBox.getSelectedItem()),String.valueOf(endComboBox.getSelectedItem())));
                 } catch (SQLException e1) {
                     e1.printStackTrace();
@@ -118,7 +119,7 @@ public class AppForm extends JPanel{
                 }
             }
         });
-
+*/
         JButton viewAllRoutesBtn = new JButton("View all routes");
 
         viewAllRoutesBtn.addActionListener(new ActionListener() {
@@ -153,13 +154,20 @@ public class AppForm extends JPanel{
         gc.gridy = 0;
         add(simpleTrain, gc);
 
-        gc.gridx = 2;
-        gc.gridy = 5;
-        add(simpleSearchBtn, gc);
+
 
         gc.gridx = 2;
         gc.gridy = 4;
         add(viewAllRoutesBtn, gc);
+
+        gc.gridx = 2;
+        gc.gridy = 3;
+        add(searchBtn, gc);
+
+        /*
+        gc.gridx = 2;
+        gc.gridy = 5;
+        add(simpleSearchBtn, gc);
 
         gc.gridx = 3;
         gc.gridy = 4;
@@ -173,9 +181,7 @@ public class AppForm extends JPanel{
         gc.gridy = 6;
         add(searchXIndirectXBtn, gc);
 
-        gc.gridx = 3;
-        gc.gridy = 7;
-        add(searchBtn, gc);
+     */
 
 
         gc.anchor = GridBagConstraints.LAST_LINE_END;

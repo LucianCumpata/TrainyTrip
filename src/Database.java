@@ -122,7 +122,7 @@ public class Database {
         OutputMessageForm.setOuputText(tableHtml);
     }
 
-    public static Integer searchSimpleRoute(String start, String end) throws SQLException {
+    public static void searchSimpleRoute(String start, String end) throws SQLException {
         getConnection();
         try (Statement stmt = connection.createStatement();
              ResultSet result = stmt.executeQuery("select r.id, n1.name, n2.name from ROUTES r\n" +
@@ -134,9 +134,35 @@ public class Database {
                 System.out.println(result.getInt(1));
                 searchSimpleRouteResult = result.getInt(1);
             }
-            return searchSimpleRouteResult;
+            OutputMessageForm.clearAllOutput();
+            searchDoubleRoute(start, end);
+            if (start.equals(end)) {
+                OutputMessageForm.setOuputText("You current location must not be equal to your destination");
+            } else if (start.equals("Your location") || end.equals("Destination")) {
+                OutputMessageForm.setOuputText("Please choose a location");
+            } else if (searchSimpleRouteResult != null) {
+                showRoute(searchSimpleRouteResult);
+            } else {
+                if (searchRoutesWithFirstNode(start, end) != null) {
+                    showRouteByInterNode(searchRoutesWithFirstNode(start, end));
+                } else if (searchRouteWithLastNode(start, end) != null) {
+                    showRouteByInterNode(searchRouteWithLastNode(start, end));
+
+                } else if (getRouteID1() != null && getRouteID2() != null) {
+                    showRoute(getRouteID1(), getRouteID2());
+                } else {
+                    if ((searchSimpleRouteResult == null) || (searchRoutesWithFirstNode(start, end) == null)
+                            || (searchRouteWithLastNode(start, end) == null)
+                            || (getRouteID1() == null && getRouteID2() == null)) {
+                        OutputMessageForm.setOuputText("Route not found!");
+                    }
+                }
+            }
+
         }
+
     }
+
 
     public static void searchDoubleRoute(String start, String end) throws SQLException {
         String destination = null;
@@ -226,8 +252,10 @@ public class Database {
             resultFinish2 = result2.getString(3);
             OutputMessageForm.setOutputTable(resultID1, resultID2, resultStart1, resultStart2, resultFinish1, resultFinish2);
         }
+        /*
         if ((routeID1 == null) || (routeID2 == null))
             OutputStatusForm.setStatusText("No routes found");
+            */
     }
 
     public static void showRouteByInterNode(Integer interNode) throws SQLException {
@@ -251,7 +279,7 @@ public class Database {
     }
 
     //Cautam toate rutele care se termina cu un anumit nod
-    public static void searchRouteWithLastNode(String startNode, String endNode) throws SQLException {
+    public static Integer searchRouteWithLastNode(String startNode, String endNode) throws SQLException {
         getConnection();
         String sql = "select r.id,n1.name, n2.name,\n" +
                 "r.INTERMEDIARY_STATIONS from ROUTES r\n" +
@@ -268,16 +296,18 @@ public class Database {
             System.out.println("Linked route" + linkedRoute);
             System.out.println("Linked nodes" + linkedNodes);
             if ((wasNodeFound(linkedNodes, convertNameToID(startNode)) == true)) {
-                showRouteByInterNode(result.getInt(4));
-                break;
+                return result.getInt(4);
+                //showRouteByInterNode(result.getInt(4));
+                //break;
 
             }
         }
+        return null;
     }
 
 
     //Cautam toate rutele care incep cu un anumit nod
-    public static void searchRoutesWithFirstNode(String startNode, String endNode) throws SQLException {
+    public static Integer searchRoutesWithFirstNode(String startNode, String endNode) throws SQLException {
         getConnection();
         String sql = "select r.id,n1.name, n2.name,\n" +
                 "r.INTERMEDIARY_STATIONS from ROUTES r\n" +
@@ -294,11 +324,13 @@ public class Database {
             System.out.println("Linked route" + linkedRoute);
             System.out.println("Linked nodes" + linkedNodes);
             if ((wasNodeFound(linkedNodes, convertNameToID(endNode)) == true)) {
-                showRouteByInterNode(result.getInt(4));
-                break;
+                return result.getInt(4);
+                // showRouteByInterNode(result.getInt(4));
+                //  break;
 
             }
         }
+        return null;
     }
 
     //Extrage muchiile dintr-o ruta si le adauga intro lista simpla inlantuita
@@ -377,19 +409,6 @@ public class Database {
         }
         return intermediaryID;
     }
-
-    public static void runSearch(String box1, String box2) throws SQLException {
-        if (searchSimpleRoute(box1, box2) != 0) {
-            showRoute(searchSimpleRoute(box1, box2));
-        } else {
-            searchDoubleRoute(box1, box2);
-            if (getRouteID2() != 0 && getRouteID2() != 0) {
-                showRoute(convertNameToID(box1), convertNameToID(box2));
-            }
-        }
-
-    }
-
 
     public static String returnEdges(LinkedList list) {
         String stringResult = "";

@@ -104,5 +104,10 @@ public class OutputMessageForm extends JPanel{
     }
 
     public static void setOuputText(String t) {ouputText.setText(t);}
+    public static void clearAllOutput(){
+        ouputText.setText("");
+        outputTable.setText("");
+        routeRoad.setText("");
+    }
     public static void setRouteRoad (String t) { routeRoad.setText(t);}
 }
