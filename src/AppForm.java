@@ -13,7 +13,7 @@ public class AppForm extends JPanel{
     OutputStatusForm statusForm =  new OutputStatusForm();
 
     public AppForm() throws SQLException, IOException {
-        String path = "C:\\Users\\proal\\Documents\\GitHub\\TrainyTrip\\src\\images\\Aiga_railtransportation.png";
+        String path = "C:\\Users\\proal\\Documents\\GitHub\\TrainyTrip\\src\\images\\train_transport.png";
         File file = new File(path);
         BufferedImage image = ImageIO.read(file);
         JLabel simpleTrain = new JLabel (new ImageIcon(image));
@@ -177,7 +177,7 @@ public class AppForm extends JPanel{
         gc.gridy = 7;
         add(searchBtn, gc);
 
-        
+
         gc.anchor = GridBagConstraints.LAST_LINE_END;
     }
 }
